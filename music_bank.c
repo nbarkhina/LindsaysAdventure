@@ -1425,15 +1425,19 @@ void musicUpdate(){
     musicPos3++;
     musicTimer3 = hit->duration/4;
 
-    if (hit->note==NOTE_REST){
-      NR42_REG = 0x00; //rest
+    if (disableNoise==0)
+    {
+      if (hit->note==NOTE_REST){
+        NR42_REG = 0x00; //rest
+      }
+      else{
+        NR41_REG = 0x00; //full length, we gate manually via timer
+        NR42_REG = 0x52; //volume envelope for percussive hit
+        NR43_REG = 0x15; //medium noise tone
+        NR44_REG = 0x80; //trigger noise
+      }
     }
-    else{
-      NR41_REG = 0x00; //full length, we gate manually via timer
-      NR42_REG = 0x52; //volume envelope for percussive hit
-      NR43_REG = 0x15; //medium noise tone
-      NR44_REG = 0x80; //trigger noise
-    }
+    
   }
 
   //count down active notes so they end cleanly between timestamps
@@ -1451,8 +1455,11 @@ void musicUpdate(){
 
   if (musicTimer3>0){
     musicTimer3--;
-    if (musicTimer3==0)
-      NR42_REG = 0x00;
+    if (disableNoise==0)
+    {
+      if (musicTimer3==0)
+        NR42_REG = 0x00;
+    }
   }
 
   //advance global music clock (60 ticks per second)

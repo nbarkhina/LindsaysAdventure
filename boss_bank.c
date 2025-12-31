@@ -18,7 +18,7 @@ void runBoss(Boss* boss){
 
     //clamp movement bounds for the tall sprite
     int minY = 8;
-    int maxY = (14*8) - 32; //account for 4-tile height
+    int maxY = 60; //account for 4-tile height
     if (boss->Y < minY){
       boss->Y = minY;
       boss->direction = MoveDirectionDown;
@@ -53,7 +53,7 @@ void runBoss(Boss* boss){
           break;
         }
       }
-      boss->shootTimer = 180;
+      boss->shootTimer = 90;
     }
 
     //check collisions with player
@@ -81,6 +81,7 @@ void runBoss(Boss* boss){
         if (boss->health==0){
           boss->state=StateDying;
           boss->deathCounter=60;
+          disableNoise = 1; //disable noise temporarily to make death sound more pronounced
           playNoise();
         }
         else{
@@ -92,8 +93,18 @@ void runBoss(Boss* boss){
   }else if (boss->state==StateDying)
   {
     boss->deathCounter--;
+    if (boss->deathCounter==50){
+        playNoise();
+    }
+    if (boss->deathCounter==40){
+        playNoise();
+    }
+    if (boss->deathCounter==30){
+        playNoise();
+    }
     if (boss->deathCounter==0){
         boss->state=StateDead;
+        disableNoise = 0; //re-enable noise channel
         hideSpriteCount += 2; //8-sprite boss
 
         //spawn up down platform and bird on top
@@ -119,6 +130,7 @@ void runBoss(Boss* boss){
                 setLevelTile(boss->X+8,  48, 0x2B);// wall
                 setLevelTile(boss->X+16,  48, 0x2B); // wall
                 setLevelTile(boss->X+24,  48, 0x2B);// wall
+                break;
             }
         }
     }
@@ -139,10 +151,6 @@ void drawBoss(Boss* boss){
     //set local variables
     screenX = boss->X-cameraX+8; //plus 8 because gameboy x sprites are -8
     screenY = boss->Y+16; //plus 16 because gameboy x sprites are -16
-    screenX1 = screenX+8;
-    screenY1 = screenY+8;
-    screenY2 = screenY+16;
-    y1 = screenY+24;
 
     unsigned char hideBoss = 0;
     if (boss->state==StateAlive && boss->invincibilityTimer>0 && (boss->invincibilityTimer & invincibilityFlashMask))
@@ -159,28 +167,57 @@ void drawBoss(Boss* boss){
         move_sprite(spriteIndex, 0,0);spriteIndex++;
         move_sprite(spriteIndex, 0,0);spriteIndex++;
         move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
+        move_sprite(spriteIndex, 0,0);spriteIndex++;
         return;
       }
 
-      //top two rows
-      set_sprite_tile(spriteIndex, 0x30);
-      move_sprite(spriteIndex, screenX,screenY);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x31);
-      move_sprite(spriteIndex, screenX1,screenY);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x40);
-      move_sprite(spriteIndex, screenX,screenY1);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x41);
-      move_sprite(spriteIndex, screenX1,screenY1);spriteIndex++;
+      //5 rows by 3 columns
 
-      //bottom two rows
-      set_sprite_tile(spriteIndex, 0x50);
-      move_sprite(spriteIndex, screenX,screenY2);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x51);
-      move_sprite(spriteIndex, screenX1,screenY2);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x60);
-      move_sprite(spriteIndex, screenX,y1);spriteIndex++;
-      set_sprite_tile(spriteIndex, 0x61);
-      move_sprite(spriteIndex, screenX1,y1);spriteIndex++;
+      //row 1
+      set_sprite_tile(spriteIndex, 0x4D);
+      move_sprite(spriteIndex, screenX,screenY);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x4E);
+      move_sprite(spriteIndex, screenX+8,screenY);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x4F);
+      move_sprite(spriteIndex, screenX+16,screenY);spriteIndex++;
+
+      //row 2
+      set_sprite_tile(spriteIndex, 0x5D);
+      move_sprite(spriteIndex, screenX,screenY+8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x5E);
+      move_sprite(spriteIndex, screenX+8,screenY+8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x5F);
+      move_sprite(spriteIndex, screenX+16,screenY+8);spriteIndex++;
+
+      //row 3
+      set_sprite_tile(spriteIndex, 0x6D);
+      move_sprite(spriteIndex, screenX,screenY+16);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x6E);
+      move_sprite(spriteIndex, screenX+8,screenY+16);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x6F);
+      move_sprite(spriteIndex, screenX+16,screenY+16);spriteIndex++;
+
+      //row 4
+      set_sprite_tile(spriteIndex, 0x7D);
+      move_sprite(spriteIndex, screenX,screenY+24);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x7E);
+      move_sprite(spriteIndex, screenX+8,screenY+24);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x7F);
+      move_sprite(spriteIndex, screenX+16,screenY+24);spriteIndex++;
+
+      //row 5
+      set_sprite_tile(spriteIndex, 0x8D);
+      move_sprite(spriteIndex, screenX,screenY+32);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x8E);
+      move_sprite(spriteIndex, screenX+8,screenY+32);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x8F);
+      move_sprite(spriteIndex, screenX+16,screenY+32);spriteIndex++;
     }
     else if (boss->state==StateDying)
     {
@@ -189,19 +226,40 @@ void drawBoss(Boss* boss){
       set_sprite_tile(spriteIndex, 0x03);
       move_sprite(spriteIndex, screenX-boss->scatter_x,screenY-boss->scatter_y);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX1+boss->scatter_x,screenY-boss->scatter_y);spriteIndex++;
+      move_sprite(spriteIndex, screenX+boss->scatter_x,screenY-boss->scatter_y);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX-boss->scatter_x,screenY1);spriteIndex++;
+      move_sprite(spriteIndex, screenX-boss->scatter_x,screenY+boss->scatter_y);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX1+boss->scatter_x,screenY1);spriteIndex++;
+      move_sprite(spriteIndex, screenX+boss->scatter_x,screenY+boss->scatter_y);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX-boss->scatter_x,screenY2+boss->scatter_y);spriteIndex++;
+
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX1+boss->scatter_x,screenY2+boss->scatter_y);spriteIndex++;
+      move_sprite(spriteIndex, screenX-boss->scatter_x+16,screenY-boss->scatter_y+16);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX-boss->scatter_x,y1+boss->scatter_y);spriteIndex++;
+      move_sprite(spriteIndex, screenX+boss->scatter_x-16,screenY-boss->scatter_y+16);spriteIndex++;
       set_sprite_tile(spriteIndex, 0x03);
-      move_sprite(spriteIndex, screenX1+boss->scatter_x,y1+boss->scatter_y);spriteIndex++;
+      move_sprite(spriteIndex, screenX-boss->scatter_x+16,screenY+boss->scatter_y-16);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX+boss->scatter_x-16,screenY+boss->scatter_y-16);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX-boss->scatter_x,screenY+8-boss->scatter_y+8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX+boss->scatter_x,screenY-8-boss->scatter_y+8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX-boss->scatter_x,screenY+8+boss->scatter_y-8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX+boss->scatter_x,screenY-8+boss->scatter_y-8);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX-boss->scatter_x+24,screenY-boss->scatter_y+24);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX+boss->scatter_x-24,screenY-boss->scatter_y+24);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
+      move_sprite(spriteIndex, screenX-boss->scatter_x+24,screenY+boss->scatter_y+24);spriteIndex++;
+      set_sprite_tile(spriteIndex, 0x03);
     }
 
 }

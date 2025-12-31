@@ -740,13 +740,13 @@ void drawBouncer(Bouncer* bouncer){
       }
       else
       {
-        set_sprite_tile(spriteIndex, 0x4D);
+        set_sprite_tile(spriteIndex, 0x56);
         move_sprite(spriteIndex, screenX,screenY);spriteIndex++;
-        set_sprite_tile(spriteIndex, 0x4E);
+        set_sprite_tile(spriteIndex, 0x57);
         move_sprite(spriteIndex, screenX1,screenY);spriteIndex++;
-        set_sprite_tile(spriteIndex, 0x5D);
+        set_sprite_tile(spriteIndex, 0x66);
         move_sprite(spriteIndex, screenX,screenY1);spriteIndex++;
-        set_sprite_tile(spriteIndex, 0x5E);
+        set_sprite_tile(spriteIndex, 0x67);
         move_sprite(spriteIndex, screenX1,screenY1);spriteIndex++;
       }
     }

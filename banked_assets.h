@@ -260,6 +260,7 @@ extern unsigned char invincibilityTimer; //frames remaining while the player is 
 extern const unsigned char invincibilityDuration; //1 second at 60fps
 extern const unsigned char invincibilityFlashMask; //use bit toggling for quick flashing
 extern unsigned char showGameOverMessage; //flag to draw game over text during reset
+extern unsigned char disableNoise; // flag to disable noise channel temporarily
 
 //physics
 extern unsigned char readyToJump; //gets reset when player is on the ground

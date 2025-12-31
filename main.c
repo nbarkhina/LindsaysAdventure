@@ -168,6 +168,7 @@ unsigned char invincibilityTimer; //frames remaining while the player is invulne
 const unsigned char invincibilityDuration = 60; //1 second at 60fps
 const unsigned char invincibilityFlashMask = 0x04; //use bit toggling for quick flashing
 unsigned char showGameOverMessage; //flag to draw game over text during reset
+unsigned char disableNoise; // flag to disable noise channel temporarily
 
 //physics
 unsigned char readyToJump = 0; //gets reset when player is on the ground
@@ -222,11 +223,13 @@ void printText(const char *text, UINT8 x, UINT8 y)
 void drawSoundOption(){
   if (soundMasterToggle)
   {
-    printText("<SOUND ON >", 5, 16); //pad to overwrite OFF length
+    // I had to move the position of the greater than symbol
+    // because the dragon was so big - swapped it with semicolon
+    printText("<SOUND ON ;", 5, 16); //pad to overwrite OFF length
   }
   else
   {
-    printText("<SOUND OFF>", 5, 16);
+    printText("<SOUND OFF;", 5, 16);
   }
 
   //white tile for the spaces between lindsays adventure and press start
@@ -571,7 +574,7 @@ void drawLevelChunk(){
           bosses[l].scatter_x = 0;
           bosses[l].scatter_y = 0;
           bosses[l].deathCounter = 0;
-          bosses[l].health = 5;
+          bosses[l].health = 4;
           bosses[l].invincibilityTimer = 0;
           bosses[l].shootTimer = 150;
           bosses[l].X = levelChunkDrawn*8;
@@ -1060,7 +1063,8 @@ loadLevel(){
   winTimer = 0;
   fallResetTimer = 0;
   currentGameState = GameStatePlaying;
-
+  disableNoise = 0;
+  
   enableSoundEffects();
   startMusic();
 
@@ -1087,14 +1091,18 @@ loadLevel(){
   }
 
   //draw babysitter
-  // for(j=0;j<4;j++)
-  // {
-  //   for(i=0;i<2;i++)
-  //   {
-  //     bg_buffer[i] = 48+i+(j*16);
-  //   }
-  //   set_bkg_tiles(2,6+j,2,1,bg_buffer);
-  // }
+  if (levelNum == 1)
+  {
+    for(j=0;j<4;j++)
+    {
+      for(i=0;i<2;i++)
+      {
+        bg_buffer[i] = 48+i+(j*16);
+      }
+      set_bkg_tiles(2,2+j,2,1,bg_buffer);
+    }
+  }
+
 
   // text_buffer[0] = 33;
   // text_buffer[1] = 'B';
