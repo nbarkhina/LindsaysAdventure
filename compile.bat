@@ -1,1 +1,1 @@
-lcc -Wa-l -Wl-m -Wl-j -Wl-yt0x19 -Wl-yo8 -o lindsay.gb hello_world.c levels_bank.c gfx_bank.c music_bank.c engine_bank.c boss_bank.c
+lcc -Wa-l -Wl-m -Wl-j -Wl-yt0x19 -Wl-yo8 -o lindsay.gb main.c levels_bank.c gfx_bank.c music_bank.c engine_bank.c boss_bank.c
